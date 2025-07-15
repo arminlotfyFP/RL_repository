@@ -12,20 +12,22 @@ if __name__== '__main__':
 
     states = np.linspace(-0.2094,0.2094,10)
     V={}
-    for state in range(len(states)+1):
-        V[state]=0
+    V = {i: 0.0 for i in range(len(states) + 1)}
 
-    for i in range(5000):
+
+    for i in range(50):
         observation, info = env.reset()
-        Truncated   = False
-        Terminated  = False
-        while not Terminated:
-            state = int(np.digitize(observation[2],state,right=False))
+        truncated   = False
+        terminated  = False
+        while not (terminated or truncated):
+            state = int(np.digitize(observation[2],states,right=False))
             action = simple_policy(state)
-            observation_, reward, truncated, terminated, info = gym.step(action)
-            state_ = int(np.digitize(observation_[2],state,right=False))
-            V[state] = V[state] - alpha * (reward + gamma * V[state_] - V[state])
+            observation_, reward, truncated, terminated, info = env.step(action)
+            state_ = int(np.digitize(observation_[2],states,right=False))
+            V[state] += alpha * (reward + gamma * V[state_] - V[state])
             observation = observation_
+        if i%100==0:
+            print(f"Iterations: {i}" )
 
     for state in V:
         print(state, "%.3f" %V[state])
