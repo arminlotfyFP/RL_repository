@@ -15,7 +15,7 @@ if __name__== '__main__':
     V = {i: 0.0 for i in range(len(states) + 1)}
 
 
-    for i in range(50):
+    for i in range(5000):
         observation, info = env.reset()
         truncated   = False
         terminated  = False
